@@ -18,8 +18,8 @@ var path 	= require('path');
 FormideOS = {};
 
 // global directories
-FormideOS.coreRoot = path.resolve(__dirname) + '/';
-FormideOS.appRoot = path.resolve(__dirname + '/../') + '/';
+FormideOS.coreRoot = path.resolve(__dirname) + path.sep;
+FormideOS.appRoot = path.resolve(__dirname, '..') + path.sep;
 
 // global config
 FormideOS.config = require('./utils/config.js')();

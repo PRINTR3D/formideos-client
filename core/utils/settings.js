@@ -14,6 +14,7 @@
 
 var fs = require('fs');
 var observed = require('observed');
+var path = require('path');
 
 module.exports = function() {
 
@@ -21,7 +22,7 @@ module.exports = function() {
 	this.env = process.env.NODE_ENV || 'production';
 	
 	// settings object
-	this.cfg = JSON.parse(fs.readFileSync(FormideOS.appRoot + FormideOS.config.get('settings.path') + '/settings.json', {encoding: 'utf8'}));
+	this.cfg = JSON.parse(fs.readFileSync(path.join(FormideOS.appRoot, FormideOS.config.get('settings.path'), '/settings.json'), {encoding: 'utf8'}));
 	
 	// settings target object
 	this.fullCfg = {};
@@ -31,9 +32,9 @@ module.exports = function() {
 
 	// write settings to storage when changed
 	ee.on('change', function() {
-		fs.writeFileSync(FormideOS.appRoot + FormideOS.config.get('settings.path') + '/settings.json', JSON.stringify(cfg));
+		fs.writeFileSync(path.join(FormideOS.appRoot, FormideOS.config.get('settings.path'), 'settings.json'), JSON.stringify(cfg));
 	});
-	
+
 	// get all settings (for a module)
 	this.getSettings = function(module) {
 		if (module) return this.cfg[module];
