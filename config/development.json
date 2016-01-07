@@ -9,7 +9,7 @@
 		"permission": false
 	},
 	"cloud": {
-		"url": "https://api-dev.formide.com",
+		"url": "http://localhost:3000",
 		"permission": false
 	},
 	"log": {

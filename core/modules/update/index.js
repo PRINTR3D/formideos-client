@@ -26,19 +26,19 @@ module.exports = {
         this.updateStatusLocation = config.updateStatusLocation;
         this.channel = config.channel;
 
-        this.checkForUpdate(function (err, response) {
-            if (err)
-                FormideOS.log.error('Checking for updates', err);
-            else
-                FormideOS.log.debug('Checking for updates', response);
-        });
-
-        this.getUpdateStatus(function (err, response) {
-            console.log(e, response);
-        });
+        // this.checkForUpdate(function (err, response) {
+        //     if (err)
+        //         FormideOS.log.error('Checking for updates', err);
+        //     else
+        //         FormideOS.log.debug('Checking for updates', response);
+        // });
+        //
+        // this.getUpdateStatus(function (err, response) {
+        //     console.log(e, response);
+        // });
 	},
 
-    getUpdateStatus: function(callback) {
+    getUpdateStatus: function (callback) {
         try {
             var updateStatus = ini.parse(fs.readFileSync(this.updateStatusLocation, 'utf-8'));
 

@@ -13,13 +13,42 @@ module.exports = (routes, module) => {
 	});
 
 	/**
+	 * List nearby networks
+	 */
+	routes.get('/networks', (req, res) => {
+		module.getNetworks((err, networks) => {
+			if (err) return res.serverError(err.message);
+			return res.ok(networks);
+		});
+	});
+
+	/**
+	 * Go to setup mode (enable AP)
+	 */
+	routes.post('/setup', (req, res) => {
+		module.setupMode(err => {
+			if (err) return res.serverError(err.message);
+			return res.ok({ message: 'Started access point' });
+		});
+	});
+
+	/**
+	 * Connect to a network
+	 */
+	routes.post('/connect', (req, res) => {
+		module.connect(req.body.ssid, req.body.password, (err, success) => {
+			if (err) return res.serverError(err.message);
+			return res.ok({ message: 'Device connected to network' });
+		});
+	});
+
+	/**
 	 * Register device to owner in cloud
 	 */
 	routes.post('/register', (req, res) => {
-		// TODO: register existing local user as owner instead of creating new one
-		module.registerDevice(req.body.ownerEmail, req.body.ownerPassword, req.body.registerToken, function(err, user) {
+		module.registerDevice(req.body.accessToken, function(err, user) {
 			if (err) return res.badRequest(err.message);
-			return res.ok({ message: "User created and registered as owner" });
+			return res.ok({ message: 'Device registered' });
 		});
 	});
 };
