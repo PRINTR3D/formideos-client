@@ -30,6 +30,6 @@
 		"path": "/"
 	},
 	"update": {
-		"channel": "beta"
+		"channel": "nightly"
 	}
 }
