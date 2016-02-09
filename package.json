@@ -2,7 +2,7 @@
   "name": "formide-client",
   "version": "0.3.0",
   "description": "FORMIDE client is a modular 3D printing operating system with the goal of serving all 3D printers.",
-  "main": "bootstrap.js",
+  "main": "app.js",
   "author": "Printr B.V. <info@printr.nl>",
   "repository": {
     "type": "git",
@@ -41,7 +41,7 @@
     "express-session": "~1.10.3",
     "express-validator": "^2.9.0",
     "fancy-errors": "^0.1.2",
-    "formide-client-interface": "^0.3.37",
+    "formide-client-interface": "git+https://github.com/printr3d/formide-client-interface.git",
     "formide-drivers": "git+https://github.com/printr3d/formide-drivers-npm.git",
     "formide-tools": "github:printr3d/formide-tools#v0.0.26",
     "fs-extra": "^0.26.4",

@@ -1,4 +1,10 @@
 #!/bin/bash
+
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd $DIR/..
-node --nouse-idle-notification app
+
+if [ -z $NODE_MEM_LIMIT ]; then
+    node --nouse-idle-notification app
+else
+    node --max-old-space-size=$NODE_MEM_LIMIT --nouse-idle-notification app
+fi
