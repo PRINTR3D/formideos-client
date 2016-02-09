@@ -77,7 +77,6 @@ module.exports = {
 			.then(function(printJob) {
 				self.createSliceRequest(printJob.id, function(err, sliceRequest) {
 					if (err) return callback(err);
-					console.log(sliceRequest);
 
 					// already return response
 					callback(null, printJob);
@@ -87,7 +86,6 @@ module.exports = {
 						data: sliceRequest
 					};
 					sliceData.data.mode = 'gcode'; //THIS IS NOT ADDED ANYWHERE!!
-					console.log("sliceData",sliceData);
 
 					// write slicerequest to local Katana instance
 					FormideOS.events.emit('slicer.started', {
@@ -187,18 +185,18 @@ module.exports = {
 					.populate('sliceProfile')
 					.exec((err, printJob) => {
 						if (err) return callback(err);
-						//Add updated sliceProfile to printJob
-						var updatedPrintJob = printJob.toObject();
-						updatedPrintJob.sliceProfile.settings = fixedSettings;
-						console.log(updatedPrintJob.sliceProfile.settings.infill);
+						// //Add updated sliceProfile to printJob
+						// var updatedPrintJob = printJob.toObject();
+						// updatedPrintJob.sliceProfile.settings = fixedSettings;
+						// console.log('printJob', updatedPrintJob);
 
-						formideTools.generateSlicerequestFromPrintjob(updatedPrintJob,{
+						formideTools.generateSlicerequestFromPrintjob(printJob.toObject(),{
 									version: version,
 									bucketIn: FormideOS.config.get('app.storageDir') + FormideOS.config.get("paths.modelfiles"),
 									bucketOut: FormideOS.config.get('app.storageDir') + FormideOS.config.get("paths.gcode"),
 									responseId: printJob.responseId
 								},reference, function(err,sliceRequest){
-									console.log("sliceRequest",sliceRequest);
+									//console.log("sliceRequest",sliceRequest);
 									return callback(err,sliceRequest);
 						});
 						// try {
