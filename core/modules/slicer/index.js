@@ -85,6 +85,7 @@ module.exports = {
 						type: 'slice',
 						data: sliceRequest
 					};
+					sliceData.data.mode = 'gcode'; //THIS IS NOT ADDED ANYWHERE!!
 
 					// write slicerequest to local Katana instance
 					FormideOS.events.emit('slicer.started', {
@@ -127,7 +128,7 @@ module.exports = {
 									return FormideOS.events.emit('slicer.failed', {
 										title:   'Slicer error',
 										status:  response.status,
-										message: 'Failed slicing ' + updated[0].name,
+										message: 'Failed slicing ' + updated[0].name + ', ' + response.data.msg,//Added error msg of katana
 										data:    response.data
 									});
 								})
@@ -167,6 +168,8 @@ module.exports = {
 
 			var reference = require('katana-slicer/reference.json');
 			var version = printJob.sliceProfile.version || reference.version;
+			assert(reference,'no reference found');
+			assert(version,'no version found');
 
 			formideTools.updateSliceprofile(reference, version, printJob.sliceProfile.settings, function(err, fixedSettings, version) {
 				if (err) return callback(err);
@@ -182,22 +185,42 @@ module.exports = {
 					.populate('sliceProfile')
 					.exec((err, printJob) => {
 						if (err) return callback(err);
+						// //Add updated sliceProfile to printJob
+						// var updatedPrintJob = printJob.toObject();
+						// updatedPrintJob.sliceProfile.settings = fixedSettings;
+						// console.log('printJob', updatedPrintJob);
 
-						try {
-							var sliceRequest = formideTools
-							.generateSlicerequestFromPrintjob(printJob.toObject(), {
-								version: version,
-								bucketIn: FormideOS.config.get('app.storageDir') + FormideOS.config.get("paths.modelfiles"),
-								bucketOut: FormideOS.config.get('app.storageDir') + FormideOS.config.get("paths.gcode"),
-								responseId: printJob.responseId
-							})
-							.generateAll();
-
-							return callback(null, sliceRequest);
-						}
-						catch(e) {
-							return callback(e);
-						}
+						formideTools.generateSlicerequestFromPrintjob(printJob.toObject(),{
+									version: version,
+									bucketIn: FormideOS.config.get('app.storageDir') + FormideOS.config.get("paths.modelfiles"),
+									bucketOut: FormideOS.config.get('app.storageDir') + FormideOS.config.get("paths.gcode"),
+									responseId: printJob.responseId
+								},reference, function(err,sliceRequest){
+									//console.log("sliceRequest",sliceRequest);
+									return callback(err,sliceRequest);
+						});
+						// try {
+						// 	// var sliceRequest = new formideTools
+						// 	// .SliceRequest(printJob.toObject(), {
+						// 	// 	version: version,
+						// 	// 	bucketIn: FormideOS.config.get('app.storageDir') + FormideOS.config.get("paths.modelfiles"),
+						// 	// 	bucketOut: FormideOS.config.get('app.storageDir') + FormideOS.config.get("paths.gcode"),
+						// 	// 	responseId: printJob.responseId
+						// 	// },reference)
+						// 	// .generateAll()
+						// 	// .getResult();
+						// 	var sliceRequest = formideTools.generateSlicerequestFromPrintjob(printJob.toObject(), {
+						// 			version: version,
+						// 			bucketIn: FormideOS.config.get('app.storageDir') + FormideOS.config.get("paths.modelfiles"),
+						// 			bucketOut: FormideOS.config.get('app.storageDir') + FormideOS.config.get("paths.gcode"),
+						// 			responseId: printJob.responseId
+						// 		},reference);
+						//
+						// 	return callback(null, sliceRequest);
+						// }
+						// catch(e) {
+						// 	return callback(e);
+						// }
 
 					});
 				});
