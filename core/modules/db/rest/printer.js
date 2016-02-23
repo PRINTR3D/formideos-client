@@ -45,6 +45,7 @@ module.exports = (routes, db) => {
 			gcodeFlavour:		req.body.gcodeFlavour,
 			startGcode:			req.body.startGcode,
 			endGcode:			req.body.endGcode,
+			abilities:			req.body.abilities,
 			createdBy:			req.user.id,
 		})
 		.then((printer) => {
@@ -68,6 +69,7 @@ module.exports = (routes, db) => {
 			gcodeFlavour:		req.body.gcodeFlavour,
 			startGcode:			req.body.startGcode,
 			endGcode:			req.body.endGcode,
+			abilities:			req.body.abilities,
 			updatedBy:			req.user.id
 		})
 		.then((updated) => {
