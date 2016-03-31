@@ -3,6 +3,11 @@
  *	Copyright (c) 2015, All rights reserved, http://printr.nl
  */
 
+const TYPE_CARTESIAN = 'CARTESIAN';
+const TYPE_DELTA     = 'DELTA';
+const ORIGIN_CORNER  = 'CORNER';
+const ORIGIN_CENTER  = 'CENTER';
+
 module.exports = {
 	identity: 'printer',
 
@@ -108,7 +113,17 @@ module.exports = {
 	types: {
 		// custom validation for bed object
 		is_valid_bed: function (val) {
-			return (typeof val.x === "number") && (typeof val.y === "number") && (typeof val.z === "number") && (typeof val.heated === "boolean");
+			if (!val.hasOwnProperty('printerType'))
+				return false;
+
+			if (val.printerType === TYPE_CARTESIAN)
+				return (typeof val.x === 'number') && (typeof val.y === 'number') && (typeof val.z === 'number') && (typeof val.heated === 'boolean');
+
+			if (val.printerType === TYPE_DELTA)
+				return (typeof val.diameter === 'number') && (typeof val.z === 'number') && (typeof val.heated === 'boolean');
+
+			// printerType not valid
+			return false;
 		},
 
 		// custom validation for axis object
@@ -137,5 +152,24 @@ module.exports = {
 			}
 			return true;
 		}
+	},
+
+	// custom validation for nested object like bed
+	afterValidate(values, next) {
+		if (values.hasOwnProperty('bed')) {
+			if (values.bed.hasOwnProperty('placeOfOrigin'))
+				if (values.bed.placeOfOrigin !== ORIGIN_CORNER && values.bed.placeOfOrigin !== ORIGIN_CENTER)
+					return next(new Error('bed.placeOfOrigin has an invalid value'));
+
+			// when cartesian and no origin, default to cornet
+			if (values.bed.printerType === TYPE_CARTESIAN)
+				if (!values.bed.hasOwnProperty('placeOfOrigin')) values.bed.placeOfOrigin = ORIGIN_CORNER;
+
+			// when delta an no origin, default to center
+			if (values.bed.printerType === TYPE_DELTA)
+				if (!values.bed.hasOwnProperty('placeOfOrigin')) values.bed.placeOfOrigin = ORIGIN_CENTER;
+		}
+
+		return next();
 	}
 };
