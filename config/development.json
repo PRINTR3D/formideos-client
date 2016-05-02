@@ -22,17 +22,7 @@
 		"gcode": "/gcode",
 		"images": "/images"
 	},
-	"printer": {},
-	"files": {
-		"permission": false
-	},
-	"slicer": {
-		"version": "1.0.6"
-	},
 	"settings": {
 		"path": "/"
-	},
-	"update": {
-		"channel": "beta"
 	}
 }

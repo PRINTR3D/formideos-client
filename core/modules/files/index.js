@@ -193,6 +193,8 @@ module.exports = {
 		if (this.tools) {
 			const hash = uuid.v4();
 			const target = path.join(FormideOS.config.get('app.storageDir'), FormideOS.config.get('paths.modelfiles'));
+			const filePathArray = filePath.split('/');
+			const fileName = filePathArray[filePathArray.length - 1];
 
 			this.tools.copy(drive, filePath, target, hash, (err, success) => {
 				if (err)
@@ -202,8 +204,8 @@ module.exports = {
 
 				if (ext === '.stl' || ext === '.gcode') {
 					FormideOS.db.UserFile.create({
-						prettyname: filePath,
-						filename:   filePath,
+						prettyname: fileName,
+						filename:   fileName,
 						filesize:   0, // TODO
 						filetype:   `text/${ext.replace('.', '')}`,
 						hash:       hash,

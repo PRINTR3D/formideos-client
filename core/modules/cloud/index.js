@@ -14,6 +14,7 @@ const publicIp	 = require('public-ip');
 const request	 = require('request');
 const socket	 = require('socket.io-client');
 const uuid		 = require('node-uuid');
+const Throttle   = require('throttle');
 
 function addWifiSetupRoute(app, tools) {
 	app.get('/', (req, res) => {
@@ -113,30 +114,32 @@ module.exports = {
 			// authenticate formideos based on mac address and api token, also
 			// sends permissions for faster blocking via cloud
 			publicIp((err, publicIpAddress) => {
-			getIp((err, internalIpAddress) => {
-			getMac((err, macAddress) => {
-				self.cloud.emit('authenticate', {
-					type: 		 'client',
-					ip: 		 publicIpAddress,
-					ip_internal: internalIpAddress,
-					version:     require('../../../package.json').version,
-					environment: FormideOS.config.environment,
-					mac: 		 macAddress,
-					port:        FormideOS.config.get('app.port')
-				}, response => {
-					if (response.success) {
-						FormideOS.log('Cloud connected');
+				getIp((err, internalIpAddress) => {
+					getMac((err, macAddress) => {
+						self.cloud.emit('authenticate', {
+							type: 		 'client',
+							ip: 		 publicIpAddress,
+							ip_internal: internalIpAddress,
+							version:     require('../../../package.json').version,
+							environment: FormideOS.config.environment,
+							mac: 		 macAddress,
+							port:        FormideOS.config.get('app.port')
+						}, response => {
+							if (response.success) {
+								FormideOS.log('Cloud connected');
 
-						// forward all events to the cloud
-						FormideOS.events.onAny(forwardEvents);
-					}
-					else {
-						// something went wrong when connecting to the cloud
-						FormideOS.log.error(
-							'Cloud connection error:', response.message);
-					}
+								// forward all events to the cloud
+								FormideOS.events.onAny(forwardEvents);
+							}
+							else {
+								// something went wrong when connecting to the cloud
+								FormideOS.log.error(
+									'Cloud connection error:', response.message);
+							}
+						});
+					});
 				});
-			}); }); });
+			});
 		});
 
 		/**
@@ -145,19 +148,6 @@ module.exports = {
 		this.cloud.on('ping', data => {
 			self.cloud.emit('pong', data);
 		});
-
-		/**
-		 * This event is triggered when a user logs into the cloud and want to access one of his clients
-		 */
-		// this.cloud.on('authenticateUser', data => {
-		// 	FormideOS.log("Cloud authenticate user:" + data.id);
-		// 	this.authenticate(data, (err, accessToken) => {
-		// 		FormideOS.log('Cloud user authorized with access_token ' + accessToken.token);
-		// 		self.cloud.emit(
-		// 			'authenticateUser',
-		// 			getCallbackData(data._callbackId, err, accessToken.token));
-		// 	});
-		// });
 
 		/**
 		 * HTTP proxy request from cloud
@@ -261,6 +251,8 @@ module.exports = {
 				}, function (error, response, body) {
 					if (error) return callback(error);
 					return callback(null, body);
+				}).on('error', (err) => {
+					FormideOS.log.error('http proxy error:', err);
 				});
 			}
 		});
@@ -270,7 +262,6 @@ module.exports = {
 	 * Handles addToQueue from cloud
 	 */
 	addToQueue: function(data, callback) {
-		var self = this;
 		var hash = uuid.v4();
 
 		FormideOS.db.QueueItem.create({
@@ -287,27 +278,29 @@ module.exports = {
 				queueItem: queueItem
 			});
 
-			// TODO: better way of fetching gcode files from cloud
-			request({
-				method: 'GET',
-				url: FormideOS.config.get('cloud.url') + '/files/download/gcode',
-				qs: {
-					hash: data.gcode
-				},
+			const newPath = path.join(FormideOS.config.get('app.storageDir'), FormideOS.config.get('paths.gcode'), hash);
+			const fws = fs.createWriteStream(newPath);
+
+			// create a throttle of 10Mbps for downloading gcode
+			const throttle = new Throttle(10000000);
+
+			request
+			.get(`${FormideOS.config.get('cloud.url')}/files/download/gcode?hash=${data.gcode}`, {
 				strictSSL: false
 			})
-			.on('response', function(response) {
-				var newPath = path.join(FormideOS.config.get('app.storageDir'), FormideOS.config.get('paths.gcode'), hash);
-				var fws = fs.createWriteStream(newPath);
-				response.pipe(fws);
-				response.on('end', function() {
-					FormideOS.log('finished downloading gcode. Received ' + fws.bytesWritten + ' bytes');
+			.on('error', (err) => {
+				FormideOS.log.error('error downloading gcode:', err.message);
+				FormideOS.events.emit('queueItem.downloadError', { title: `${data.printJob.name} has failed to download`, message: err.message });
+			})
+			.pipe(throttle)
+			.pipe(fws)
+			.on('finish', () => {
+				FormideOS.log('finished downloading gcode. Received ' + fws.bytesWritten + ' bytes');
 
-					// set status to queued to indicate it's ready to print
-					queueItem.status = 'queued';
-					queueItem.save(() => {
-						FormideOS.events.emit('queueItem.downloaded', { title: `${data.printJob.name} is ready to print`, message: 'The gcode was downloaded and is now ready to be printed' });
-					});
+				// set status to queued to indicate it's ready to print
+				queueItem.status = 'queued';
+				queueItem.save(() => {
+					FormideOS.events.emit('queueItem.downloaded', { title: `${data.printJob.name} is ready to print`, message: 'The gcode was downloaded and is now ready to be printed' });
 				});
 			});
 		});
@@ -331,6 +324,23 @@ module.exports = {
 			this.tools.networks(cb);
 		else
 			cb(new Error('element-tools not installed'));
+	},
+
+	/**
+	 * Get internal IP address to show in UI
+	 * @param cb
+     */
+	getInternalIp: function(cb) {
+		let getIp = callback => {
+			setImmediate(() => callback(null, internalIp()));
+		};
+
+		if (this.tools && this.tools.getIp instanceof Function)
+			getIp = this.tools.getIp;
+
+		getIp((err, internalIpAddress) => {
+			return cb(err, internalIpAddress);
+		});
 	},
 
 	/**

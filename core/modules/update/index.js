@@ -8,20 +8,16 @@ const fs = require('fs');
 module.exports = {
 
 	tools: null,
-	channel: null,
 	updateCheckURL: null,
 	availableUpdate: null,
 
-	init: function (config) {
+	init: function() {
 		try {
 			this.tools = require('element-tools').update;
 		}
 		catch (e) {
 			FormideOS.log.warn('element-tools not found for update, probably not running on The Element');
-			// FormideOS.log.warn(e);
 		}
-
-		this.channel = config.channel;
 
 		// only check for update when update tools are actually available
 		if (this.tools) {
@@ -31,7 +27,7 @@ module.exports = {
 		}
 	},
 
-	getUpdateStatus: function (cb) {
+	getUpdateStatus: function(cb) {
 		if (this.tools)
 			this.tools.getUpdateStatus(cb);
 		else
@@ -57,4 +53,4 @@ module.exports = {
 		else
 			return cb(new Error('element-tools not found'));
 	}
-}
+};
