@@ -36,8 +36,11 @@ module.exports = (routes, cloud) => {
 	routes.get('/status', (req, res) => {
 		cloud.getStatus((err, connected) => {
 			if (err) return res.serverError(err);
-			if (connected) return res.ok({ connected: true });
-			return res.ok({ connected: false });
+			cloud.getInternalIp((err, internalIp) => {
+				if (err) return res.serverError(err);
+				connected = connected ? true : false;
+				return res.ok({ connected, internalIp });
+			});
 		});
 	});
 

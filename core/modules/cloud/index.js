@@ -114,30 +114,32 @@ module.exports = {
 			// authenticate formideos based on mac address and api token, also
 			// sends permissions for faster blocking via cloud
 			publicIp((err, publicIpAddress) => {
-			getIp((err, internalIpAddress) => {
-			getMac((err, macAddress) => {
-				self.cloud.emit('authenticate', {
-					type: 		 'client',
-					ip: 		 publicIpAddress,
-					ip_internal: internalIpAddress,
-					version:     require('../../../package.json').version,
-					environment: FormideOS.config.environment,
-					mac: 		 macAddress,
-					port:        FormideOS.config.get('app.port')
-				}, response => {
-					if (response.success) {
-						FormideOS.log('Cloud connected');
+				getIp((err, internalIpAddress) => {
+					getMac((err, macAddress) => {
+						self.cloud.emit('authenticate', {
+							type: 		 'client',
+							ip: 		 publicIpAddress,
+							ip_internal: internalIpAddress,
+							version:     require('../../../package.json').version,
+							environment: FormideOS.config.environment,
+							mac: 		 macAddress,
+							port:        FormideOS.config.get('app.port')
+						}, response => {
+							if (response.success) {
+								FormideOS.log('Cloud connected');
 
-						// forward all events to the cloud
-						FormideOS.events.onAny(forwardEvents);
-					}
-					else {
-						// something went wrong when connecting to the cloud
-						FormideOS.log.error(
-							'Cloud connection error:', response.message);
-					}
+								// forward all events to the cloud
+								FormideOS.events.onAny(forwardEvents);
+							}
+							else {
+								// something went wrong when connecting to the cloud
+								FormideOS.log.error(
+									'Cloud connection error:', response.message);
+							}
+						});
+					});
 				});
-			}); }); });
+			});
 		});
 
 		/**
@@ -146,19 +148,6 @@ module.exports = {
 		this.cloud.on('ping', data => {
 			self.cloud.emit('pong', data);
 		});
-
-		/**
-		 * This event is triggered when a user logs into the cloud and want to access one of his clients
-		 */
-		// this.cloud.on('authenticateUser', data => {
-		// 	FormideOS.log("Cloud authenticate user:" + data.id);
-		// 	this.authenticate(data, (err, accessToken) => {
-		// 		FormideOS.log('Cloud user authorized with access_token ' + accessToken.token);
-		// 		self.cloud.emit(
-		// 			'authenticateUser',
-		// 			getCallbackData(data._callbackId, err, accessToken.token));
-		// 	});
-		// });
 
 		/**
 		 * HTTP proxy request from cloud
@@ -335,6 +324,23 @@ module.exports = {
 			this.tools.networks(cb);
 		else
 			cb(new Error('element-tools not installed'));
+	},
+
+	/**
+	 * Get internal IP address to show in UI
+	 * @param cb
+     */
+	getInternalIp: function(cb) {
+		let getIp = callback => {
+			setImmediate(() => callback(null, internalIp()));
+		};
+
+		if (this.tools && this.tools.getIp instanceof Function)
+			getIp = this.tools.getIp;
+
+		getIp((err, internalIpAddress) => {
+			return cb(err, internalIpAddress);
+		});
 	},
 
 	/**
