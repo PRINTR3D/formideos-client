@@ -3,8 +3,6 @@
  *	Copyright (c) 2015, All rights reserved, http://printr.nl
  */
 
-var uuid = require('node-uuid');
-
 module.exports = {
 	identity: 'material',
 

@@ -4,7 +4,7 @@
  */
 
 /*
- *	This is the bootstrapper of formide-client. It basically kicks off the formideos core
+ *	This is the bootstrapper of formide-client. It basically kicks off the formide-client core
  *	and loads the core modules. After that, all user installed modules are loaded. Finally,
  *	all loaded modules are activated via the moduleManager.activateLoadedModules function.
  */
@@ -13,7 +13,7 @@
 var pkg 	= require('./package.json');
 var path 	= require('path');
 
-// Load formideos core file
+// Load formide-client core file
 const initFormide = require('./core/FormideOS');
 
 initFormide().then(() => {
