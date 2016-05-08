@@ -14,6 +14,7 @@
 const path             = require('path');
 const sailsDiskAdapter = require('sails-disk');
 const initDb 		   = require('./utils/db');
+const seed 			   = require('./utils/db/seed');
 
 // small function to get home directory of current user
 function getUserHome() {
@@ -90,15 +91,7 @@ module.exports = dbConfig => {
 
 	return initDb(dbConfig).then(
 		db => {
-
-			db.User.create({
-				email: "admin@local",
-				password: "admin",
-				isAdmin: true
-			}, function (err, users) {
-				// if (err) console.log(err);
-			});
-
+			seed(db, path.join(getUserHome(), 'formidePresets'));
 			FormideOS.db = db;
 		},
 		err => {
