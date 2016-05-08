@@ -28,6 +28,7 @@ initFormide().then(() => {
 
 	// Load core modules
 	FormideOS.moduleManager.loadModule('/core/modules/db',		'db',       true);
+	FormideOS.moduleManager.loadModule('/core/modules/presets', 'presets',  true);
 	FormideOS.moduleManager.loadModule('/core/modules/auth',	'auth',     true);
 	FormideOS.moduleManager.loadModule('/core/modules/files', 	'files',    true);
 	FormideOS.moduleManager.loadModule('/core/modules/printer', 'printer',  true);
