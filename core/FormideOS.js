@@ -67,7 +67,7 @@ module.exports = dbConfig => {
 			FormideOS.config.get('app.storageDir'), 'database_');
 		
 		let presetStorage = path.join(
-			getUserHome(), 'presets'
+			getUserHome(), 'formidePresets', 'database_'
 		);
 
 		dbConfig = {
