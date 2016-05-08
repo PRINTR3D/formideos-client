@@ -16,6 +16,27 @@ module.exports = (routes, db) => {
     });
 
     /**
+     * Search through sliceprofile presets
+     */
+    routes.get('/sliceprofiles/search', (req, res) => {
+        const searchArray = req.query.s.split(',');
+        var searchObject = {
+            or: []
+        };
+
+        for (var el of searchArray) {
+            searchObject.or.push({
+                like: { name: `%${el}%` }
+            });
+        }
+
+        db.PresetSliceprofile
+            .find(searchObject, { select: ((req.query.fields) ? req.query.fields.split(',') : '') })
+            .then(res.ok)
+            .catch(res.serverError);
+    });
+
+    /**
      * Get a single preset sliceprofile
      */
     routes.get('/sliceprofiles/:id', (req, res) => {

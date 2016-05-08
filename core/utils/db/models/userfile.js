@@ -11,8 +11,7 @@ module.exports = {
 	attributes: {
 
 		createdBy: {
-			model: 'User',
-			required: true
+			model: 'User'
 		},
 
 		hash: {
@@ -23,11 +22,6 @@ module.exports = {
 		filename: {
 			type: 'string',
 			required: true
-		},
-
-		folder: {
-			type: 'string',
-			defaultsTo: '/'
 		},
 
 		prettyname: {

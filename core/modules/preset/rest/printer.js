@@ -16,6 +16,30 @@ module.exports = (routes, db) => {
     });
 
     /**
+     * Search through printer presets
+     */
+    routes.get('/printers/search', (req, res) => {
+        const searchArray = req.query.s.split(',');
+        var searchObject = {
+            or: []
+        };
+
+        for (var el of searchArray) {
+            searchObject.or.push({
+                like: { name: `%${el}%` }
+            });
+            searchObject.or.push({
+                like: { manufacturer: `%${el}%` }
+            });
+        }
+
+        db.PresetPrinter
+            .find(searchObject, { select: ((req.query.fields) ? req.query.fields.split(',') : '') })
+            .then(res.ok)
+            .catch(res.serverError);
+    });
+
+    /**
      * Get a single preset printer
      */
     routes.get('/printers/:id', (req, res) => {

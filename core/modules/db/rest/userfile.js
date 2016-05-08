@@ -14,8 +14,7 @@ module.exports = (routes, db) => {
 	 */
 	routes.get('/files', (req, res) => {
 		db.UserFile
-		.find({ createdBy: req.user.id }, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
-		.populate('createdBy')
+		.find({}, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
 		.populate('printJobs')
 		.then(res.ok)
 		.error(res.serverError);
@@ -26,7 +25,7 @@ module.exports = (routes, db) => {
 	 */
 	routes.get('/files/:id', (req, res) => {
 		db.UserFile
-		.findOne({ createdBy: req.user.id, id: req.params.id })
+		.findOne({ id: req.params.id })
 		.populate('printJobs')
 		.then(userFile => {
 			if (!userFile) return res.notFound();

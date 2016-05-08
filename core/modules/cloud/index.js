@@ -86,7 +86,7 @@ module.exports = {
 		});
 
 		this.cloud.on('connect_error', function (err) {
-			FormideOS.log.error("Error when connecting to cloud: " + err);
+			FormideOS.log.warn("Connecting to cloud: " + err);
 		});
 
 		this.cloud.on('connect_timeout', function (err) {
