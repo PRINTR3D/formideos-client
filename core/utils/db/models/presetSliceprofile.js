@@ -4,7 +4,7 @@
  */
 
 module.exports ={
-    identity: 'presetSliceprofile',
+    identity: 'presetsliceprofile',
 
     connection: 'presets',
 

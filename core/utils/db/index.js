@@ -28,15 +28,18 @@ function initializeDb(config) {
 	})
 	.then(() => thenify(cb => waterline.initialize(config, cb))())
 	.then(models => ({
-		AccessToken:  models.collections.accesstoken,
-		Log:          models.collections.log,
-		Material:     models.collections.material,
-		Printer:      models.collections.printer,
-		PrintJob:     models.collections.printjob,
-		QueueItem:    models.collections.queueitem,
-		SliceProfile: models.collections.sliceprofile,
-		User:         models.collections.user,
-		UserFile:     models.collections.userfile
+		AccessToken:        models.collections.accesstoken,
+		Log:                models.collections.log,
+		Material:           models.collections.material,
+		Printer:            models.collections.printer,
+		PrintJob:           models.collections.printjob,
+		QueueItem:          models.collections.queueitem,
+		SliceProfile:       models.collections.sliceprofile,
+		User:               models.collections.user,
+		UserFile:           models.collections.userfile,
+		PresetMaterial:     models.collections.presetmaterial,
+		PresetSliceprofile: models.collections.presetsliceprofile,
+		PresetPrinter:		models.collections.presetprinter
 	}));
 }
 

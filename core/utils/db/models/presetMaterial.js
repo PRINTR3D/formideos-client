@@ -4,7 +4,7 @@
  */
 
 module.exports = {
-    identity: 'presetMaterial',
+    identity: 'presetmaterial',
 
     connection: 'presets',
 

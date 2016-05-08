@@ -4,7 +4,7 @@
  */
 
 module.exports = {
-    identity: 'presetPrinter',
+    identity: 'presetprinter',
 
     connection: 'presets',
 
