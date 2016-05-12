@@ -205,19 +205,33 @@ AbstractPrinter.prototype.resumePrint = function(callback) {
 AbstractPrinter.prototype.stopPrint = function(callback) {
 	var self = this;
 	// TODO: implement custom stop gcode array (2nd param)
+
 	self.driver.stopPrint(self.port, '', function(err, response) {
-		if (err) return FormideOS.log.error(err.message);
-		FormideOS.db.QueueItem.findOne({ id: self.queueItemId }, function(err, queueItem) {
-			if (err) return FormideOS.log.error(err.message);
-			if (!queueItem) return FormideOS.log.warn('No queue item with that ID found to stop printing');
-			queueItem.status = 'queued';
-			queueItem.save();
+
+		if (err)
+			return FormideOS.log.error(err.message);
+
+		FormideOS.db.QueueItem
+		.findOne({ id: self.queueItemId }, (err, queueItem) => {
+
 			FormideOS.events.emit('printer.stopped', {
-				port: self.port,
+				port:		 self.port,
 				queueItemId: self.queueItemId
 			});
+
 			self.queueItemId = null;
-			return callback(err, 'stopped printing');
+
+			if (err)
+				return callback(err);
+
+			if (!queueItem) {
+				FormideOS.log.warn('No queue item with that ID found to stop printing');
+				return callback(null, 'stopped printing');
+			}
+
+			queueItem.status = 'queued';
+			queueItem.save();
+			return callback(null, 'stopped printing');
 		});
 	});
 }
@@ -227,30 +241,36 @@ AbstractPrinter.prototype.stopPrint = function(callback) {
  */
 AbstractPrinter.prototype.printFinished = function(queueItemId) {
 	var self = this;
-	if (queueItemId !== self.queueItemId) FormideOS.log.warn('Warning: driver queue ID and client queue ID are not the same!', true);
-	FormideOS.db.QueueItem
-	.findOne({ id: self.queueItemId }, function(err, queueItem) {
 
-		FormideOS.events.emit('printer.finished', {
-			port:		 self.port,
-			queueItemId: self.queueItemId
-		});
+	if (queueItemId !== self.queueItemId)
+		FormideOS.log.warn('Warning: driver queue ID and client queue ID are not the same!');
 
-		// reset queueItemId of current print
-		self.queueItemId = null;
-
-		// remove gcode from cloud
-		if (queueItem.origin === 'cloud') {
-			const gcodePath = path.join(FormideOS.config.get('app.storageDir'), FormideOS.config.get('paths.gcode'), queueItem.gcode);
-			fs.unlinkSync(gcodePath);
-		}
-
-		if (err) return FormideOS.log.err(err);
-		if (!queueItem) return FormideOS.log.warn('No queue item with that ID found to handle finished printing');
-		queueItem.status = 'finished';
-		queueItem.save();
+	FormideOS.events.emit('printer.finished', {
+		port:		 self.port,
+		queueItemId: self.queueItemId
 	});
-}
+
+	if (self.queueItemId)
+		FormideOS.db.QueueItem
+		.findOne({ id: self.queueItemId }, function(err, queueItem) {
+
+			// reset queueItemId of current print
+			self.queueItemId = null;
+
+			if (err)
+				return FormideOS.log.err(err.message);
+
+			if (!queueItem)
+				return FormideOS.log.warn('No queue item with that ID found to handle finished printing');
+
+			// remove gcode from cloud
+			if (queueItem.origin === 'cloud')
+				fs.unlinkSync(path.join(FormideOS.config.get('app.storageDir'), FormideOS.config.get('paths.gcode'), queueItem.gcode));
+
+			queueItem.status = 'finished';
+			queueItem.save();
+		});
+};
 
 /**
  * Send a custom gcode to the printer (raw)
