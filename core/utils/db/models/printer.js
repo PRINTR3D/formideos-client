@@ -72,8 +72,7 @@ module.exports = {
 
 		// user that created printer entry
 		createdBy: {
-			model: 'user',
-			required: true
+			model: 'user'
 		},
 
 		// user that updated printer liast

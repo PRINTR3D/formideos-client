@@ -17,8 +17,7 @@ module.exports ={
 		},
 
 		createdBy: {
-			model: 'User',
-			required: true
+			model: 'User'
 		},
 
 		settings: {
@@ -34,6 +33,11 @@ module.exports ={
 		printJobs: {
 			collection: 'printjob',
 			via: 'sliceProfile'
+		},
+
+		preset: {
+			type: 'boolean',
+			defaultsTo: false
 		}
 	}
 };

@@ -46,13 +46,17 @@ module.exports = {
 		},
 
 		createdBy: {
-			model: 'user',
-			required: true
+			model: 'user'
 		},
 
 		printJobs: {
 			collection: 'printjob',
 			via: 'materials'
+		},
+
+		preset: {
+			type: 'boolean',
+			defaultsTo: false
 		}
 	}
 };

@@ -9,8 +9,8 @@ module.exports = (routes, db) => {
      * Get a list of preset sliceprofiles
      */
     routes.get('/sliceprofiles', (req, res) => {
-        db.PresetSliceprofile
-            .find({}, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
+        db.Sliceprofile
+            .find({ preset: true }, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
             .then(res.ok)
             .error(res.serverError);
     });
@@ -21,6 +21,7 @@ module.exports = (routes, db) => {
     routes.get('/sliceprofiles/search', (req, res) => {
         const searchArray = req.query.s.split(',');
         var searchObject = {
+            preset: true,
             or: []
         };
 
@@ -30,7 +31,7 @@ module.exports = (routes, db) => {
             });
         }
 
-        db.PresetSliceprofile
+        db.Sliceprofile
             .find(searchObject, { select: ((req.query.fields) ? req.query.fields.split(',') : '') })
             .then(res.ok)
             .catch(res.serverError);
@@ -40,8 +41,8 @@ module.exports = (routes, db) => {
      * Get a single preset sliceprofile
      */
     routes.get('/sliceprofiles/:id', (req, res) => {
-        db.PresetSliceprofile
-            .findOne({ id: req.params.id })
+        db.Sliceprofile
+            .findOne({ id: req.params.id, preset: true })
             .then((sliceprofile) => {
                 if (!sliceprofile) return res.notFound();
                 return res.ok(sliceprofile);

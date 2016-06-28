@@ -35,10 +35,7 @@ function initializeDb(config) {
 		QueueItem:          models.collections.queueitem,
 		SliceProfile:       models.collections.sliceprofile,
 		User:               models.collections.user,
-		UserFile:           models.collections.userfile,
-		PresetMaterial:     models.collections.presetmaterial,
-		PresetSliceprofile: models.collections.presetsliceprofile,
-		PresetPrinter:		models.collections.presetprinter
+		UserFile:           models.collections.userfile
 	}));
 }
 

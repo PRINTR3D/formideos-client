@@ -25,7 +25,7 @@
 	"settings": {
 		"path": "/"
 	},
-	"presets": {
+	"preset": {
 		"permission": false
 	}
 }

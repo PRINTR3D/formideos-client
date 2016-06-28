@@ -11,8 +11,8 @@ module.exports = (routes, db) => {
      * Get a list of preset materials
      */
     routes.get('/materials', (req, res) => {
-        db.PresetMaterial
-            .find({}, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
+        db.Material
+            .find({ preset: true }, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
             .then(res.ok)
             .error(res.serverError);
     });
@@ -23,6 +23,7 @@ module.exports = (routes, db) => {
     routes.get('/materials/search', (req, res) => {
         const searchArray = req.query.s.split(',');
         var searchObject = {
+            preset: true,
             or: []
         };
 
@@ -35,7 +36,7 @@ module.exports = (routes, db) => {
             });
         }
 
-        db.PresetMaterial
+        db.Material
             .find(searchObject, { select: ((req.query.fields) ? req.query.fields.split(',') : '') })
             .then(res.ok)
             .catch(res.serverError);
@@ -45,8 +46,8 @@ module.exports = (routes, db) => {
      * Get a single preset material
      */
     routes.get('/materials/:id', (req, res) => {
-        db.PresetMaterial
-            .findOne({ id: req.params.id })
+        db.Material
+            .findOne({ id: req.params.id, preset: true })
             .then((material) => {
                 if (!material) return res.notFound();
                 return res.ok(material);

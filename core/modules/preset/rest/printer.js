@@ -9,8 +9,8 @@ module.exports = (routes, db) => {
      * Get a list of preset printers
      */
     routes.get('/printers', (req, res) => {
-        db.PresetPrinter
-            .find({}, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
+        db.Printer
+            .find({ preset: true }, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
             .then(res.ok)
             .error(res.serverError);
     });
@@ -21,6 +21,7 @@ module.exports = (routes, db) => {
     routes.get('/printers/search', (req, res) => {
         const searchArray = req.query.s.split(',');
         var searchObject = {
+            preset: true,
             or: []
         };
 
@@ -33,7 +34,7 @@ module.exports = (routes, db) => {
             });
         }
 
-        db.PresetPrinter
+        db.Printer
             .find(searchObject, { select: ((req.query.fields) ? req.query.fields.split(',') : '') })
             .then(res.ok)
             .catch(res.serverError);
@@ -43,8 +44,8 @@ module.exports = (routes, db) => {
      * Get a single preset printer
      */
     routes.get('/printers/:id', (req, res) => {
-        db.PresetPrinter
-            .findOne({ id: req.params.id })
+        db.Printer
+            .findOne({ id: req.params.id, preset: true })
             .then((printer) => {
                 if (!printer) return res.notFound();
                 return res.ok(printer);

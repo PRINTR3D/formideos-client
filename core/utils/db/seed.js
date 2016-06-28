@@ -27,9 +27,11 @@ module.exports = (db, presetStorage) => { co(function*() {
         files.forEach(file => { co(function*() {
             if (file.match(/\.json$/) == null) return;
             const preset = require(path.join(presetStorage, './materials', file));
-            yield db.PresetMaterial.findOrCreate({
+            preset.preset = true;
+            yield db.Material.update({
+                preset: true,
                 name: preset.name
-            }, preset);
+            }, preset, { upsert: true });
         }).then(null, console.error); });
     });
 
@@ -38,9 +40,11 @@ module.exports = (db, presetStorage) => { co(function*() {
         files.forEach(file => { co(function*() {
             if (file.match(/\.json$/) == null) return;
             const preset = require(path.join(presetStorage, './sliceprofiles', file));
-            yield db.PresetSliceprofile.findOrCreate({
+            preset.preset = true;
+            yield db.Sliceprofile.update({
+                preset: true,
                 name: preset.name
-            }, preset);
+            }, preset, { upsert: true });
         }).then(null, console.error); });
     });
 
@@ -49,9 +53,11 @@ module.exports = (db, presetStorage) => { co(function*() {
         files.forEach(file => { co(function*() {
             if (file.match(/\.json$/) == null) return;
             const preset = require(path.join(presetStorage, './printers', file));
-            yield db.PresetPrinter.findOrCreate({
+            preset.preset = true;
+            yield db.Printer.update({
+                preset: true,
                 name: preset.name
-            }, preset);
+            }, preset, { upsert: true });
         }).then(null, console.error); });
     });
 
