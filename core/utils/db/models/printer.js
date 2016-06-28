@@ -109,7 +109,8 @@ module.exports = {
 		},
 
 		presetOrder: {
-			type: 'integer'
+			type: 'integer',
+			defaultsTo: 9999
 		}
 	},
 
