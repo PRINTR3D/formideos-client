@@ -31,11 +31,11 @@ initFormide().then(() => {
 	FormideOS.moduleManager.loadModule('/core/modules/preset',  'preset',   true);
 	FormideOS.moduleManager.loadModule('/core/modules/auth',	'auth',     true);
 	FormideOS.moduleManager.loadModule('/core/modules/files', 	'files',    true);
-	// FormideOS.moduleManager.loadModule('/core/modules/printer', 'printer',  true);
-	// FormideOS.moduleManager.loadModule('/core/modules/slicer',	'slicer',	true);
+	FormideOS.moduleManager.loadModule('/core/modules/printer', 'printer',  true);
+	FormideOS.moduleManager.loadModule('/core/modules/slicer',	'slicer',	true);
 	FormideOS.moduleManager.loadModule('/core/modules/update',	'update',	true);
 	FormideOS.moduleManager.loadModule('/core/modules/cloud',   'cloud',	true);
-	
+
 	// Load all via npm installed formide-client modules
 	for(var i in pkg.dependencies) {
 		if (i.indexOf("formide-client-") > -1) {
