@@ -16,12 +16,6 @@ const sailsDiskAdapter = require('sails-disk');
 const initDb 		   = require('./utils/db');
 const seed 			   = require('./utils/db/seed');
 
-// small function to get home directory of current user
-function getUserHome() {
-	if (process.platform === 'win32') return process.env.USERPROFILE;
-	return process.env.HOME;
-}
-
 // FormideOS global object
 global.FormideOS = {};
 
@@ -66,10 +60,6 @@ module.exports = dbConfig => {
 	if (!dbConfig) {
 		let storage = path.join(
 			FormideOS.config.get('app.storageDir'), 'database_');
-		
-		let presetStorage = path.join(
-			getUserHome(), 'formidePresets', 'database_'
-		);
 
 		dbConfig = {
 			adapters: { disk: sailsDiskAdapter },
@@ -78,11 +68,6 @@ module.exports = dbConfig => {
 				default: {
 					adapter:  'disk',
 					filePath: storage
-				},
-				// database for all installed presets, not editable by users
-				presets: {
-					adapter:  'disk',
-					filePath: presetStorage
 				}
 			},
 			defaults: { migrate: 'safe' }
@@ -91,7 +76,7 @@ module.exports = dbConfig => {
 
 	return initDb(dbConfig).then(
 		db => {
-			seed(db, path.join(getUserHome(), 'formidePresets'));
+			seed(db, path.join(FormideOS.config.get('app.storageDir'), 'formidePresets'));
 			FormideOS.db = db;
 		},
 		err => {
