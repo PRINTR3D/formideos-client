@@ -11,7 +11,7 @@ module.exports = (routes, db) => {
 	routes.get('/materials', (req, res) => {
 		db.Material
 		.find({ or: [ { createdBy: req.user.id }, { preset: true } ] }, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
-		// .populate('createdBy')
+		.sort('presetOrder ASC')
 		.then(res.ok)
 		.error(res.serverError);
 	});
@@ -22,7 +22,6 @@ module.exports = (routes, db) => {
 	routes.get('/materials/:id', (req, res) => {
 		db.Material
 		.findOne({ or: [ { createdBy: req.user.id }, { preset: true } ], id: req.params.id })
-		.populate('createdBy')
 		.then((material) => {
 			if (!material) return res.notFound();
 			return res.ok(material);

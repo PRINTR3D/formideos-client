@@ -18,7 +18,8 @@ module.exports = (routes, db) => {
 	 */
 	routes.get('/sliceprofiles', (req, res) => {
 		db.SliceProfile
-		.find({ createdBy: req.user.id }, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
+		.find({ or: [ { createdBy: req.user.id }, { preset: true } ] }, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
+		.sort('presetOrder ASC')
 		.then(res.ok)
 		.error(res.serverError);
 	});
@@ -28,7 +29,7 @@ module.exports = (routes, db) => {
 	 */
 	routes.get('/sliceprofiles/:id', (req, res) => {
 		db.SliceProfile
-		.findOne({ createdBy: req.user.id, id: req.params.id })
+		.findOne({ or: [ { createdBy: req.user.id }, { preset: true } ], id: req.params.id })
 		.then((sliceProfile) => {
 			if (!sliceProfile) return res.notFound();
 			return res.ok(sliceProfile);
@@ -56,7 +57,7 @@ module.exports = (routes, db) => {
 	 */
 	routes.put('/sliceprofiles/:id', (req, res) => {
 		db.SliceProfile
-		.update({ id: req.params.id, createdBy: req.user.id }, {
+		.update({ id: req.params.id, or: [ { createdBy: req.user.id }, { preset: true } ] }, {
 			user:		req.user.id,
 			name:		req.body.name,
 			settings:	req.body.settings
@@ -72,7 +73,7 @@ module.exports = (routes, db) => {
 	 */
 	routes.delete('/sliceprofiles/:id', (req, res) => {
 		db.SliceProfile
-		.destroy({ id: req.params.id, createdBy: req.user.id })
+		.destroy({ id: req.params.id, createdBy: req.user.id, preset: false })
 		.then(() => {
 			return res.ok({ message: "Sliceprofile deleted" });
 		})

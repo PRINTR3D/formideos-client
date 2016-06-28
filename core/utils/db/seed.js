@@ -27,10 +27,8 @@ module.exports = (db, presetStorage) => { co(function*() {
             if (file.match(/\.json$/) == null) return;
             const preset = require(path.join(presetStorage, './materials', file));
             preset.preset = true;
-            yield db.Material.update({
-                id: preset.id,
-                preset: true
-            }, preset);
+            yield db.Material.destroy({ preset: true });
+            yield db.Material.create(preset);
         }).then(null, console.error); });
     });
 
@@ -40,10 +38,8 @@ module.exports = (db, presetStorage) => { co(function*() {
             if (file.match(/\.json$/) == null) return;
             const preset = require(path.join(presetStorage, './sliceprofiles', file));
             preset.preset = true;
-            yield db.Sliceprofile.update({
-                id: preset.id,
-                preset: true
-            }, preset, { upsert: true });
+            yield db.Sliceprofile.destroy({ preset: true });
+            yield db.Sliceprofile.create(preset);
         }).then(null, console.error); });
     });
 
@@ -53,10 +49,8 @@ module.exports = (db, presetStorage) => { co(function*() {
             if (file.match(/\.json$/) == null) return;
             const preset = require(path.join(presetStorage, './printers', file));
             preset.preset = true;
-            yield db.Printer.update({
-                id: preset.id,
-                preset: true
-            }, preset, { upsert: true });
+            yield db.Printer.destroy({ preset: true });
+            yield db.Printer.create(preset);
         }).then(null, console.error); });
     });
 

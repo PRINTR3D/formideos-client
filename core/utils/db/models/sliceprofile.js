@@ -38,6 +38,10 @@ module.exports ={
 		preset: {
 			type: 'boolean',
 			defaultsTo: false
+		},
+
+		presetOrder: {
+			type: 'integer'
 		}
 	}
 };

@@ -13,6 +13,7 @@ module.exports = (routes, db) => {
     routes.get('/materials', (req, res) => {
         db.Material
             .find({ preset: true }, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
+            .sort('presetOrder ASC')
             .then(res.ok)
             .error(res.serverError);
     });

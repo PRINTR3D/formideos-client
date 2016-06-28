@@ -11,6 +11,7 @@ module.exports = (routes, db) => {
     routes.get('/sliceprofiles', (req, res) => {
         db.Sliceprofile
             .find({ preset: true }, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
+            .sort('presetOrder ASC')
             .then(res.ok)
             .error(res.serverError);
     });

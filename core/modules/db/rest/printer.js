@@ -10,8 +10,8 @@ module.exports = (routes, db) => {
 	 */
 	routes.get('/printers', (req, res) => {
 		db.Printer
-		.find({ preset: false })
-		.populate('createdBy')
+		.find({}, { select: ((req.query.fields) ? req.query.fields.split(',') : "") })
+		.sort('presetOrder ASC')
 		.then(res.ok)
 		.error(res.serverError);
 	});
@@ -21,8 +21,7 @@ module.exports = (routes, db) => {
 	 */
 	routes.get('/printers/:id', (req, res) => {
 		db.Printer
-		.findOne({ id: req.params.id, preset: false })
-		.populate('createdBy')
+		.findOne({ id: req.params.id })
 		.then((printer) => {
 			if (!printer) return res.notFound();
 			return res.ok(printer);
@@ -45,7 +44,7 @@ module.exports = (routes, db) => {
 			gcodeFlavour:		req.body.gcodeFlavour,
 			startGcode:			req.body.startGcode,
 			endGcode:			req.body.endGcode,
-			createdBy:			req.user.id,
+			createdBy:			req.user.id
 		})
 		.then((printer) => {
 			return res.ok({ message: "Printer created", printer });
