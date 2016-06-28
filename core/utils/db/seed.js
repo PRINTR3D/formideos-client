@@ -19,9 +19,6 @@ module.exports = (db, presetStorage) => { co(function*() {
         isAdmin:  true
     });
 
-    // TODO: make this nicer
-    // TODO: actually, the whole database needs to be replaced with something better
-
     // material seeds
     readdir(path.join(presetStorage, './materials')).then((files) => {
         files.forEach(file => { co(function*() {
