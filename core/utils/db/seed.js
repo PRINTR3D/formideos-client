@@ -19,6 +19,8 @@ module.exports = (db, presetStorage) => { co(function*() {
         isAdmin:  true
     });
 
+    // TODO: actually, the whole database needs to be replaced with something better
+
     // material seeds
     readdir(path.join(presetStorage, './materials')).then((files) => {
         files.forEach(file => { co(function*() {
@@ -59,30 +61,30 @@ module.exports = (db, presetStorage) => { co(function*() {
     });
 
     // model seeds
-    readdir(path.join(presetStorage, './modelfiles')).then((files) => {
-        files.forEach(file => { co(function*() {
-            if (file.match(/\.stl/) == null && file.match(/\.gcode/) == null) return;
-
-            const filePath = path.join(presetStorage, './modelfiles', file);
-            const ext = path.extname(filePath).toLowerCase();
-            const hash = uuid.v4();
-
-            // insert in database
-            const userFile = yield db.UserFile.findOrCreate({
-                filename: file
-            }, {
-                prettyname: file,
-                filename:   file,
-                filesize:   0, // TODO
-                filetype:   `text/${ext.replace('.', '')}`,
-                hash:       hash
-            });
-
-            // copy the file (or overwrite when already in DB)
-            const newPath = path.join(FormideOS.config.get('app.storageDir'), FormideOS.config.get('paths.modelfiles'), userFile.hash);
-            fs.createReadStream(filePath).pipe(fs.createWriteStream(newPath));
-
-        }).then(null, console.error); });
-    });
+    // readdir(path.join(presetStorage, './modelfiles')).then((files) => {
+    //     files.forEach(file => { co(function*() {
+    //         if (file.match(/\.stl/) == null && file.match(/\.gcode/) == null) return;
+    //
+    //         const filePath = path.join(presetStorage, './modelfiles', file);
+    //         const ext = path.extname(filePath).toLowerCase();
+    //         const hash = uuid.v4();
+    //
+    //         // insert in database
+    //         const userFile = yield db.UserFile.findOrCreate({
+    //             filename: file
+    //         }, {
+    //             prettyname: file,
+    //             filename:   file,
+    //             filesize:   0, // TODO
+    //             filetype:   `text/${ext.replace('.', '')}`,
+    //             hash:       hash
+    //         });
+    //
+    //         // copy the file (or overwrite when already in DB)
+    //         const newPath = path.join(FormideOS.config.get('app.storageDir'), FormideOS.config.get('paths.modelfiles'), userFile.hash);
+    //         fs.createReadStream(filePath).pipe(fs.createWriteStream(newPath));
+    //
+    //     }).then(null, console.error); });
+    // });
 
 }).then(null, console.error); };
