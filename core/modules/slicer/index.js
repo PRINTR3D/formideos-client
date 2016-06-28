@@ -94,6 +94,9 @@ module.exports = {
 						data:    sliceRequest
 					});
 
+					const reference = require('katana-slicer/reference.json');
+
+					// self.katana.slice(JSON.stringify(sliceData), JSON.stringify(reference), function(response) {
 					self.katana.slice(JSON.stringify(sliceData), function(response) {
 						try {
 							var response = JSON.parse(response);

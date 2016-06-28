@@ -238,6 +238,8 @@ module.exports = {
 				}, function (error, response, body) {
 					if (error) return callback(error);
 					return callback(null, body);
+				}).on('error', (err) => {
+					FormideOS.log.error('http GET proxy error:', err);
 				});
 			}
 			else {
@@ -252,7 +254,7 @@ module.exports = {
 					if (error) return callback(error);
 					return callback(null, body);
 				}).on('error', (err) => {
-					FormideOS.log.error('http proxy error:', err);
+					FormideOS.log.error(`http ${data.method} proxy error:`, err);
 				});
 			}
 		});

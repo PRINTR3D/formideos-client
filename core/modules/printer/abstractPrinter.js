@@ -265,7 +265,12 @@ AbstractPrinter.prototype.printFinished = function(queueItemId) {
 
 			// remove gcode from cloud
 			if (queueItem.origin === 'cloud')
-				fs.unlinkSync(path.join(FormideOS.config.get('app.storageDir'), FormideOS.config.get('paths.gcode'), queueItem.gcode));
+				try {
+					fs.unlinkSync(path.join(FormideOS.config.get('app.storageDir'), FormideOS.config.get('paths.gcode'), queueItem.gcode));
+				}
+				catch (e) {
+					FormideOS.log.warn('File not found for deletion after print finished:', queueItem.gcode);
+				}
 
 			queueItem.status = 'finished';
 			queueItem.save();
