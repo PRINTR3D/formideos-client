@@ -50,6 +50,12 @@ module.exports = {
 				else if (event.type === 'printFinished') {
 					self.printFinished(event.port, event.printjobID);
 				}
+				else if (event.type === 'printerWarning') {
+					self.printerEvent('warning', event);
+				}
+				else if (event.type === 'printerError') {
+					self.printerEvent('error', event);
+				}
 			}
 		});
 	},
@@ -86,6 +92,15 @@ module.exports = {
 		if (this.printers[port.split("/")[2]] !== undefined) {
 			this.printers[port.split("/")[2]].printFinished(printjobId);
 		}
+	},
+
+	/**
+	 * When an event from the driver is received, emit it to websockets and pass on the event
+	 * @param level
+	 * @param event
+     */
+	printerEvent: function(level, event) {
+		FormideOS.events.emit('printer.' + level, event);
 	},
 
 	getPrinters: function() {
@@ -140,4 +155,4 @@ module.exports = {
 		if (this.printers[port] == undefined) return callback(null, false);
 		this.printers[port].resumePrint(callback);
 	}
-}
+};
