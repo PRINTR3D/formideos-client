@@ -44,6 +44,8 @@ module.exports = (routes, db) => {
 				gcodeFlavour:		req.body.gcodeFlavour,
 				startGcode:			req.body.startGcode,
 				endGcode:			req.body.endGcode,
+				maxTemperature:     req.body.maxTemperature,
+				maxBedTemperature:  req.body.maxBedTemperature,
 				abilities:          req.body.abilities,
 				createdBy:			req.user.id
 			})
@@ -68,6 +70,8 @@ module.exports = (routes, db) => {
 				gcodeFlavour:		req.body.gcodeFlavour,
 				startGcode:			req.body.startGcode,
 				endGcode:			req.body.endGcode,
+				maxTemperature:     req.body.maxTemperature,
+				maxBedTemperature:  req.body.maxBedTemperature,
 				updatedBy:			req.user.id
 			})
 			.then((updated) => {

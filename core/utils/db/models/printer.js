@@ -117,6 +117,16 @@ module.exports = {
 		presetOrder: {
 			type: 'integer',
 			defaultsTo: 9999
+		},
+
+		maxTemperature: {
+			type: 'integer',
+			defaultsTo: 250
+		},
+
+		maxBedTemperature: {
+			type: 'integer',
+			defaultsTo: 60
 		}
 	},
 
