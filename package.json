@@ -42,7 +42,7 @@
     "express-session": "~1.10.3",
     "express-validator": "^2.9.0",
     "fancy-errors": "^0.1.2",
-    "formide-client-interface": "printr3d/formide-client-interface#master",
+    "formide-client-interface": "github:printr3d/formide-client-interface#master",
     "formide-drivers": "printr3d/formide-drivers-npm#v6.0.2",
     "formide-tools": "^0.0.34",
     "fs-extra": "^0.26.4",
