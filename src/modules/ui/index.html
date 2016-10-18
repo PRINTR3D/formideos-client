@@ -76,5 +76,14 @@
 			link="alert.link">
 		</li>
 	</ul>
+
+	<dashboard-webcam
+		ng-if="$root.floatingWebcam && !$root.webcamError"
+		id="floating-webcam"
+		show-close="true"
+		ng-style="$root.floatingWebcamPosition"
+		drag-webcam>
+	</dashboard-webcam>
+	
 </body>
 </html>
