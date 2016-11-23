@@ -3,7 +3,7 @@
  *	Copyright (c) 2015, All rights reserved, http://printr.nl
  */
 
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 
 module.exports =
 {	

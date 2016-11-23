@@ -13,7 +13,7 @@ const path		 = require('path');
 const publicIp	 = require('public-ip');
 const request	 = require('request');
 const socket	 = require('socket.io-client');
-const uuid		 = require('node-uuid');
+const uuid		 = require('uuid');
 const Throttle   = require('throttle');
 
 module.exports = {

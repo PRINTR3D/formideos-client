@@ -10,7 +10,7 @@ const path   = require('path');
 const fs     = require('fs');
 const co     = require('co');
 const stream = require('stream');
-const uuid   = require('node-uuid');
+const uuid   = require('uuid');
 const base64 = require('base64-stream');
 const assert = require('assert');
 

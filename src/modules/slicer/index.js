@@ -5,7 +5,7 @@
 
 // dependencies
 const fs 		   = require('fs');
-const uuid 		   = require('node-uuid');
+const uuid 		   = require('uuid');
 const formideTools = require('katana-tools');
 const diskspace	   = require('diskspace');
 const assert	   = require('assert');
