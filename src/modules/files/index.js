@@ -7,7 +7,7 @@
 
 const fs		   = require('fs');
 const path		   = require('path');
-const uuid		   = require('node-uuid');
+const uuid		   = require('uuid');
 const diskspace	   = require('diskspace');
 const SPACE_BUFFER = 1000000; // 1MB
 const MAX_STL_SIZE = 20000000; // 20MB, to prevent slicer crashing

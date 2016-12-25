@@ -8,7 +8,7 @@
 const assert = require('assert');
 const fs	 = require('fs-extra');
 const path   = require('path');
-const uuid   = require('node-uuid');
+const uuid   = require('uuid');
 
 module.exports = (routes, db) => {
 

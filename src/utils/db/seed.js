@@ -3,7 +3,7 @@
 const fs      = require('fs');
 const co      = require('co');
 const path    = require('path');
-const uuid    = require('node-uuid');
+const uuid    = require('uuid');
 const thenify = require('thenify');
 const readdir = thenify(fs.readdir);
 

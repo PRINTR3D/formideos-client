@@ -67,7 +67,6 @@
     "morgan": "^1.7.0",
     "multer": "^1.2.0",
     "node-pre-gyp": "*",
-    "node-uuid": "^1.4.3",
     "nodejs-config": "^1.0.1",
     "nodejs-leds": "0.0.3",
     "nodejs-websocket": "^1.4.0",
@@ -98,7 +97,7 @@
     "throttle": "^1.0.3",
     "underscore": "^1.8.2",
     "utils-debug": "^0.6.3",
-    "uuid": "^2.0.3",
+    "uuid": "^3.0.0",
     "waterline": "^0.11.4",
     "winston": "^2.2.0"
   },
